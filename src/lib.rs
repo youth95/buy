@@ -111,3 +111,27 @@ impl Into<BuyCodeWithSign> for BuyCode {
         };
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::{BuyCode, BuyCodeWithSign};
+
+    #[test]
+    fn test_timestamp() {
+        assert_eq!(super::timestamp() > 0, true);
+    }
+
+    #[test]
+    fn test_create_buy_code() {
+        let code: BuyCodeWithSign = BuyCode::new(1).into();
+        assert_eq!(code.check(), true);
+        assert_eq!(
+            BuyCodeWithSign::check_code_str(&BuyCodeWithSign::make_code_str(1)).expired,
+            Some(1)
+        );
+        assert_eq!(
+            BuyCodeWithSign::check_code_str(&"".to_string()).expired,
+            None
+        );
+    }
+}
